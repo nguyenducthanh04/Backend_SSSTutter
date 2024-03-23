@@ -25,5 +25,9 @@ router.post(
 );
 router.get("/api/get-product-detail/:id", ProductController.getProductDetail);
 router.get("/api/get-size-color/:id", ProductController.getSizeByColor);
-
+router.post(
+  "/api/add-image/:id",
+  upload.single("file"),
+  ProductController.addImage
+);
 module.exports = router;

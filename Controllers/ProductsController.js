@@ -68,6 +68,9 @@ class ProductController {
       include: [
         {
           model: ProductImages,
+          where: {
+            main: 1,
+          },
         },
         {
           model: Colors,
@@ -89,6 +92,17 @@ class ProductController {
       },
     });
     res.json(color);
+  }
+  async addImage(req, res) {
+    const { id } = req.params;
+    const { filename, path } = req.file;
+    const image = await ProductImages.create({
+      fileName: filename,
+      filePath: path,
+      main: 2,
+      productId: id,
+    });
+    res.json(image);
   }
 }
 module.exports = new ProductController();
