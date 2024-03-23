@@ -3,14 +3,18 @@ const Products = model.products;
 const ProductImages = model.productImages;
 const Colors = model.colors;
 const Sizes = model.sizes;
+const ColorSizes = model.colorSizes;
 const multer = require("multer");
 const fs = require("fs").promises;
 class ProductController {
-  async productNews(req, res) {
+  async getProductNews(req, res) {
     try {
       const productNews = await Products.findAll({
         where: {
           statusId: 1,
+        },
+        include: {
+          model: ProductImages,
         },
       });
       res.json(productNews);
@@ -44,11 +48,47 @@ class ProductController {
         size,
       });
       await product.addColor(colors);
+      await product.addSize(sizes);
+      const colorSize = await ColorSizes.create({
+        colorId: colors.id,
+        sizeId: sizes.id,
+      });
       res.json(product);
     } catch (error) {
       console.error(error);
       res.status(500).json({ message: "Internal Server Error" });
     }
+  }
+  async getProductDetail(req, res) {
+    const { id } = req.params;
+    const productDetail = await Products.findOne({
+      where: {
+        id,
+      },
+      include: [
+        {
+          model: ProductImages,
+        },
+        {
+          model: Colors,
+        },
+      ],
+    });
+
+    console.log("detail:", productDetail.colors);
+    res.json(productDetail);
+  }
+  async getSizeByColor(req, res) {
+    const { id } = req.params;
+    const color = await Colors.findOne({
+      where: {
+        id,
+      },
+      include: {
+        model: Sizes,
+      },
+    });
+    res.json(color);
   }
 }
 module.exports = new ProductController();
