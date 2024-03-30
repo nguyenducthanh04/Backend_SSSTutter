@@ -30,4 +30,11 @@ router.post(
   upload.single("file"),
   ProductController.addImage
 );
+router.post("/api/add-color-size/:id", ProductController.addColorAndSize);
+router.get("/api/list-item-product/:id", ProductController.sizeDetailProduct);
+router.put(
+  "/api/update-product/:id",
+  upload.single("file"),
+  ProductController.editProduct
+);
 module.exports = router;
